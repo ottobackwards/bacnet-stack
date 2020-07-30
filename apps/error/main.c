@@ -56,7 +56,7 @@ static uint16_t Target_Service = SERVICE_CONFIRMED_READ_PROPERTY;
 static bool Error_Detected = false;
 
 static void MyAbortHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server, void *token)
 {
     (void)src;
     (void)invoke_id;
@@ -66,7 +66,7 @@ static void MyAbortHandler(
 }
 
 static void MyRejectHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason, void *token)
 {
     (void)src;
     (void)invoke_id;

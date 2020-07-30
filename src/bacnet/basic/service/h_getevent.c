@@ -77,7 +77,8 @@ void handler_get_event_information_set(
 void handler_get_event_information(uint8_t *service_request,
     uint16_t service_len,
     BACNET_ADDRESS *src,
-    BACNET_CONFIRMED_SERVICE_DATA *service_data)
+    BACNET_CONFIRMED_SERVICE_DATA *service_data,
+    void *token)
 {
     int len = 0;
     int pdu_len = 0;

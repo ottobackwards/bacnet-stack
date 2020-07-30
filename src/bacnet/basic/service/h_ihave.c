@@ -40,9 +40,10 @@
  * @param service_request [in] The received message to be handled.
  * @param service_len [in] Length of the service_request message.
  * @param src [in] The BACNET_ADDRESS of the message's source.
+ * @param token [in] The caller token, passed back in callbacks (ignored).
  */
 void handler_i_have(
-    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src)
+    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src, void *token)
 {
     int len = 0;
     BACNET_I_HAVE_DATA data;

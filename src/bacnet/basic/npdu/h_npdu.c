@@ -61,10 +61,12 @@
  *                   already been sent via the apdu_handler.
  *  @param pdu [in]  Buffer containing the NPDU and APDU of the received packet.
  *  @param pdu_len [in] The size of the received message in the pdu[] buffer.
+ *  @param token [in] The caller token, passed back in callbacks.
  */
 void npdu_handler(BACNET_ADDRESS *src, /* source address */
     uint8_t *pdu, /* PDU data */
-    uint16_t pdu_len)
+    uint16_t pdu_len,
+    void *token)
 { /* length PDU  */
     int apdu_offset = 0;
     BACNET_ADDRESS dest = { 0 };
@@ -96,7 +98,7 @@ void npdu_handler(BACNET_ADDRESS *src, /* source address */
                     /* then enter IDLE - ignore the PDU */
                 } else {
                     apdu_handler(src, &pdu[apdu_offset],
-                        (uint16_t)(pdu_len - apdu_offset));
+                        (uint16_t)(pdu_len - apdu_offset), token);
                 }
             } else {
 #if PRINT_ENABLED

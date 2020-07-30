@@ -54,7 +54,7 @@ static int Target_Router_Networks[MAX_ROUTER_DNETS] = { -1 };
 static bool Error_Detected = false;
 
 static void MyAbortHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server, void *token)
 {
     /* FIXME: verify src and invoke id */
     (void)src;
@@ -65,7 +65,7 @@ static void MyAbortHandler(
 }
 
 static void MyRejectHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason, void *token)
 {
     /* FIXME: verify src and invoke id */
     (void)src;

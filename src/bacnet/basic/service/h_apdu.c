@@ -78,7 +78,7 @@ static BACNET_SERVICES_SUPPORTED
         SERVICE_SUPPORTED_GET_EVENT_INFORMATION
     };
 
-/* a simple table for crossing the services supported */
+/* a simple table for crossing the unconfirmed services supported */
 static BACNET_SERVICES_SUPPORTED
     unconfirmed_service_supported[MAX_BACNET_UNCONFIRMED_SERVICE] = {
         SERVICE_SUPPORTED_I_AM, SERVICE_SUPPORTED_I_HAVE,
@@ -486,10 +486,13 @@ static bool apdu_unconfirmed_dcc_disabled(uint8_t service_choice)
  * @param src [in] The BACNET_ADDRESS of the message's source.
  * @param apdu [in] The apdu portion of the request, to be processed.
  * @param apdu_len [in] The total (remaining) length of the apdu.
+ * @param token [in] The caller token, passed back in callbacks.
  */
 void apdu_handler(BACNET_ADDRESS *src,
     uint8_t *apdu, /* APDU data */
-    uint16_t apdu_len)
+    uint16_t apdu_len,
+    void *token /* passed back to callback */
+    )
 {
     BACNET_CONFIRMED_SERVICE_DATA service_data = { 0 };
     BACNET_CONFIRMED_SERVICE_ACK_DATA service_ack_data = { 0 };
@@ -522,10 +525,10 @@ void apdu_handler(BACNET_ADDRESS *src,
                 if ((service_choice < MAX_BACNET_CONFIRMED_SERVICE) &&
                     (Confirmed_Function[service_choice])) {
                     Confirmed_Function[service_choice](service_request,
-                        service_request_len, src, &service_data);
+                        service_request_len, src, &service_data, token);
                 } else if (Unrecognized_Service_Handler) {
                     Unrecognized_Service_Handler(service_request,
-                        service_request_len, src, &service_data);
+                        service_request_len, src, &service_data, token);
                 }
                 break;
             case PDU_TYPE_UNCONFIRMED_SERVICE_REQUEST:
@@ -545,7 +548,7 @@ void apdu_handler(BACNET_ADDRESS *src,
                     if (service_choice < MAX_BACNET_UNCONFIRMED_SERVICE) {
                         if (Unconfirmed_Function[service_choice]) {
                             Unconfirmed_Function[service_choice](
-                                service_request, service_request_len, src);
+                                service_request, service_request_len, src, token);
                         }
                     }
                 }
@@ -579,7 +582,7 @@ void apdu_handler(BACNET_ADDRESS *src,
                                 NULL) {
                                 ((confirmed_simple_ack_function)
                                         Confirmed_ACK_Function[service_choice])(
-                                    src, invoke_id);
+                                    src, invoke_id, token);
                             }
                             tsm_free_invoke_id(invoke_id);
                             break;
@@ -626,7 +629,7 @@ void apdu_handler(BACNET_ADDRESS *src,
                                 NULL) {
                                 (Confirmed_ACK_Function[service_choice])(
                                     service_request, service_request_len, src,
-                                    &service_ack_data);
+                                    &service_ack_data, token);
                             }
                             tsm_free_invoke_id(invoke_id);
                             break;
@@ -704,7 +707,7 @@ void apdu_handler(BACNET_ADDRESS *src,
                         if (Error_Function[service_choice]) {
                             Error_Function[service_choice](src, invoke_id,
                                 (BACNET_ERROR_CLASS)error_class,
-                                (BACNET_ERROR_CODE)error_code);
+                                (BACNET_ERROR_CODE)error_code, token);
                         }
                     }
                     tsm_free_invoke_id(invoke_id);
@@ -715,7 +718,7 @@ void apdu_handler(BACNET_ADDRESS *src,
                     invoke_id = apdu[1];
                     reason = apdu[2];
                     if (Reject_Function) {
-                        Reject_Function(src, invoke_id, reason);
+                        Reject_Function(src, invoke_id, reason, token);
                     }
                     tsm_free_invoke_id(invoke_id);
                 }
@@ -726,7 +729,7 @@ void apdu_handler(BACNET_ADDRESS *src,
                     invoke_id = apdu[1];
                     reason = apdu[2];
                     if (Abort_Function) {
-                        Abort_Function(src, invoke_id, reason, server);
+                        Abort_Function(src, invoke_id, reason, server, token);
                     }
                     tsm_free_invoke_id(invoke_id);
                 }

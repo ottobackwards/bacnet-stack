@@ -55,7 +55,7 @@ static uint8_t Rx_Buf[MAX_MPDU] = { 0 };
 static bool Error_Detected = false;
 
 static void MyAbortHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server, void *token)
 {
     /* FIXME: verify src and invoke id */
     (void)src;
@@ -66,7 +66,7 @@ static void MyAbortHandler(
 }
 
 static void MyRejectHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason, void *token)
 {
     /* FIXME: verify src and invoke id */
     (void)src;
@@ -269,7 +269,7 @@ int main(int argc, char *argv[])
         pdu_len = datalink_receive(&src, &Rx_Buf[0], MAX_MPDU, timeout);
         /* process */
         if (pdu_len) {
-            npdu_handler(&src, &Rx_Buf[0], pdu_len);
+            npdu_handler(&src, &Rx_Buf[0], pdu_len, NULL);
         }
         if (Error_Detected)
             break;

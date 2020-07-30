@@ -68,7 +68,8 @@ static bool Error_Detected = false;
 static void MyErrorHandler(BACNET_ADDRESS *src,
     uint8_t invoke_id,
     BACNET_ERROR_CLASS error_class,
-    BACNET_ERROR_CODE error_code)
+    BACNET_ERROR_CODE error_code,
+    void *token)
 {
     /* FIXME: verify src and invoke id */
     (void)src;
@@ -79,7 +80,7 @@ static void MyErrorHandler(BACNET_ADDRESS *src,
 }
 
 static void MyAbortHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server, void *token)
 {
     /* FIXME: verify src and invoke id */
     (void)src;
@@ -90,7 +91,7 @@ static void MyAbortHandler(
 }
 
 static void MyRejectHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason, void *token)
 {
     /* FIXME: verify src and invoke id */
     (void)src;
@@ -100,7 +101,7 @@ static void MyRejectHandler(
 }
 
 static void MyDeviceCommunicationControlSimpleAckHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id)
+    BACNET_ADDRESS *src, uint8_t invoke_id, void *token)
 {
     (void)src;
     (void)invoke_id;
@@ -239,7 +240,7 @@ int main(int argc, char *argv[])
 
         /* process */
         if (pdu_len) {
-            npdu_handler(&src, &Rx_Buf[0], pdu_len);
+            npdu_handler(&src, &Rx_Buf[0], pdu_len, NULL);
         }
         /* at least one second has passed */
         if (current_seconds != last_seconds) {

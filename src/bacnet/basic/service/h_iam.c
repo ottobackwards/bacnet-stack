@@ -41,9 +41,10 @@
  * @param service_request [in] The received message to be handled.
  * @param service_len [in] Length of the service_request message.
  * @param src [in] The BACNET_ADDRESS of the message's source.
+ * @param token [in] The caller token, passed back in callbacks (ignored).
  */
 void handler_i_am_add(
-    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src)
+    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src, void *token)
 {
     int len = 0;
     uint32_t device_id = 0;
@@ -80,9 +81,10 @@ void handler_i_am_add(
  * @param service_request [in] The received message to be handled.
  * @param service_len [in] Length of the service_request message.
  * @param src [in] The BACNET_ADDRESS of the message's source.
+ * @param token [in] The caller token, passed back in callbacks (ignored).
  */
 void handler_i_am_bind(
-    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src)
+    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src, void *token)
 {
     int len = 0;
     uint32_t device_id = 0;

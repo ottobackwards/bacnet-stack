@@ -82,7 +82,7 @@ static bool Error_Detected = false;
 static void MyErrorHandler(BACNET_ADDRESS *src,
     uint8_t invoke_id,
     BACNET_ERROR_CLASS error_class,
-    BACNET_ERROR_CODE error_code)
+    BACNET_ERROR_CODE error_code, void *token)
 {
     if (address_match(&Target_Address, src) &&
         (invoke_id == Request_Invoke_ID)) {
@@ -94,7 +94,7 @@ static void MyErrorHandler(BACNET_ADDRESS *src,
 }
 
 static void MyAbortHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server, void *token)
 {
     (void)server;
     if (address_match(&Target_Address, src) &&
@@ -106,7 +106,7 @@ static void MyAbortHandler(
 }
 
 static void MyRejectHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason, void *token)
 {
     if (address_match(&Target_Address, src) &&
         (invoke_id == Request_Invoke_ID)) {
@@ -117,7 +117,7 @@ static void MyRejectHandler(
 }
 
 static void MyWritePropertySimpleAckHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id)
+    BACNET_ADDRESS *src, uint8_t invoke_id, void *token)
 {
     if (address_match(&Target_Address, src) &&
         (invoke_id == Request_Invoke_ID)) {
@@ -426,7 +426,7 @@ int main(int argc, char *argv[])
 
         /* process */
         if (pdu_len) {
-            npdu_handler(&src, &Rx_Buf[0], pdu_len);
+            npdu_handler(&src, &Rx_Buf[0], pdu_len, NULL);
         }
 
         /* keep track of time for next check */

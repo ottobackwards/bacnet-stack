@@ -46,7 +46,8 @@ extern "C" {
     void npdu_handler(
         BACNET_ADDRESS * src,
         uint8_t * pdu,
-        uint16_t pdu_len);
+        uint16_t pdu_len,
+        void * token);
     BACNET_STACK_EXPORT
     void npdu_handler_cleanup(void);
     BACNET_STACK_EXPORT

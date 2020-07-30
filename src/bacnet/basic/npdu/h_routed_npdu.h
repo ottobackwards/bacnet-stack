@@ -46,7 +46,8 @@ extern "C" {
         BACNET_ADDRESS * src,
         int *DNET_list,
         uint8_t * pdu,
-        uint16_t pdu_len);
+        uint16_t pdu_len,
+        void * token);
 
 #ifdef __cplusplus
 }

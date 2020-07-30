@@ -46,7 +46,8 @@ extern "C" {
         uint8_t * service_request,
         uint16_t service_len,
         BACNET_ADDRESS * src,
-        BACNET_CONFIRMED_SERVICE_DATA * service_data);
+        BACNET_CONFIRMED_SERVICE_DATA * service_data,
+        void * token);
     BACNET_STACK_EXPORT
     bool handler_cov_fsm(
         void);

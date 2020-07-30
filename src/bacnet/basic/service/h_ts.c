@@ -66,7 +66,7 @@ static void show_bacnet_date_time(BACNET_DATE *bdate, BACNET_TIME *btime)
 #endif
 
 void handler_timesync(
-    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src)
+    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src, void *token)
 {
     int len = 0;
     BACNET_DATE bdate = { 0 };
@@ -93,7 +93,7 @@ void handler_timesync(
 }
 
 void handler_timesync_utc(
-    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src)
+    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src, void *token)
 {
     int len = 0;
     BACNET_DATE bdate;
