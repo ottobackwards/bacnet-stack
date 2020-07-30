@@ -180,7 +180,8 @@ static bool Optional_Properties = false;
 static void MyErrorHandler(BACNET_ADDRESS *src,
     uint8_t invoke_id,
     BACNET_ERROR_CLASS error_class,
-    BACNET_ERROR_CODE error_code)
+    BACNET_ERROR_CODE error_code,
+    void *token)
 {
     if (address_match(&Target_Address, src) &&
         (invoke_id == Request_Invoke_ID)) {
@@ -198,7 +199,7 @@ static void MyErrorHandler(BACNET_ADDRESS *src,
 }
 
 static void MyAbortHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server, void *token)
 {
     (void)server;
     if (address_match(&Target_Address, src) &&
@@ -221,7 +222,7 @@ static void MyAbortHandler(
 }
 
 static void MyRejectHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason, void *token)
 {
     if (address_match(&Target_Address, src) &&
         (invoke_id == Request_Invoke_ID)) {
@@ -244,7 +245,7 @@ static void MyRejectHandler(
 static void MyReadPropertyAckHandler(uint8_t *service_request,
     uint16_t service_len,
     BACNET_ADDRESS *src,
-    BACNET_CONFIRMED_SERVICE_ACK_DATA *service_data)
+    BACNET_CONFIRMED_SERVICE_ACK_DATA *service_data, void *token)
 {
     int len = 0;
     BACNET_READ_ACCESS_DATA *rp_data;
@@ -272,7 +273,7 @@ static void MyReadPropertyAckHandler(uint8_t *service_request,
 static void MyReadPropertyMultipleAckHandler(uint8_t *service_request,
     uint16_t service_len,
     BACNET_ADDRESS *src,
-    BACNET_CONFIRMED_SERVICE_ACK_DATA *service_data)
+    BACNET_CONFIRMED_SERVICE_ACK_DATA *service_data, void *token)
 {
     int len = 0;
     BACNET_READ_ACCESS_DATA *rpm_data;
@@ -1495,7 +1496,7 @@ int main(int argc, char *argv[])
 
                 /* process; normally is some initial error */
                 if (pdu_len) {
-                    npdu_handler(&src, &Rx_Buf[0], pdu_len);
+                    npdu_handler(&src, &Rx_Buf[0], pdu_len, NULL);
                 }
                 /* will wait until the device is bound, or timeout and quit */
                 found = address_bind_request(
@@ -1573,7 +1574,7 @@ int main(int argc, char *argv[])
 
                 /* process */
                 if (pdu_len) {
-                    npdu_handler(&src, &Rx_Buf[0], pdu_len);
+                    npdu_handler(&src, &Rx_Buf[0], pdu_len, NULL);
                 }
 
                 if ((Read_Property_Multiple_Data.new_data) &&
@@ -1664,7 +1665,7 @@ int main(int argc, char *argv[])
 
                 /* process */
                 if (pdu_len) {
-                    npdu_handler(&src, &Rx_Buf[0], pdu_len);
+                    npdu_handler(&src, &Rx_Buf[0], pdu_len, NULL);
                 }
 
                 if ((Read_Property_Multiple_Data.new_data) &&

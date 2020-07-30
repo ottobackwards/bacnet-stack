@@ -45,13 +45,15 @@ extern "C" {
     void handler_i_am_add(
         uint8_t * service_request,
         uint16_t service_len,
-        BACNET_ADDRESS * src);
+        BACNET_ADDRESS * src,
+        void * token);
 
     BACNET_STACK_EXPORT
     void handler_i_am_bind(
         uint8_t * service_request,
         uint16_t service_len,
-        BACNET_ADDRESS * src);
+        BACNET_ADDRESS * src,
+        void * token);
 
 #ifdef __cplusplus
 }

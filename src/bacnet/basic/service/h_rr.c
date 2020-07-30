@@ -102,7 +102,8 @@ static int Encode_RR_payload(uint8_t *apdu, BACNET_READ_RANGE_DATA *pRequest)
 void handler_read_range(uint8_t *service_request,
     uint16_t service_len,
     BACNET_ADDRESS *src,
-    BACNET_CONFIRMED_SERVICE_DATA *service_data)
+    BACNET_CONFIRMED_SERVICE_DATA *service_data,
+    void *token)
 {
     BACNET_READ_RANGE_DATA data;
     int len = 0;

@@ -68,7 +68,8 @@ static uint8_t Request_Invoke_ID = 0;
 static void Atomic_Read_File_Error_Handler(BACNET_ADDRESS *src,
     uint8_t invoke_id,
     BACNET_ERROR_CLASS error_class,
-    BACNET_ERROR_CODE error_code)
+    BACNET_ERROR_CODE error_code,
+    void *token)
 {
     if (address_match(&Target_Address, src) &&
         (invoke_id == Request_Invoke_ID)) {
@@ -80,7 +81,7 @@ static void Atomic_Read_File_Error_Handler(BACNET_ADDRESS *src,
 }
 
 static void MyAbortHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server, void *token)
 {
     (void)server;
     if (address_match(&Target_Address, src) &&
@@ -92,7 +93,7 @@ static void MyAbortHandler(
 }
 
 static void MyRejectHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason, void *token)
 {
     if (address_match(&Target_Address, src) &&
         (invoke_id == Request_Invoke_ID)) {
@@ -105,7 +106,7 @@ static void MyRejectHandler(
 static void AtomicReadFileAckHandler(uint8_t *service_request,
     uint16_t service_len,
     BACNET_ADDRESS *src,
-    BACNET_CONFIRMED_SERVICE_ACK_DATA *service_data)
+    BACNET_CONFIRMED_SERVICE_ACK_DATA *service_data, void *token)
 {
     int len = 0;
     int result = 0;
@@ -165,7 +166,7 @@ static void AtomicReadFileAckHandler(uint8_t *service_request,
 }
 
 static void LocalIAmHandler(
-    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src)
+    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src, void *token)
 {
     int len = 0;
     uint32_t device_id = 0;
@@ -319,7 +320,7 @@ int main(int argc, char *argv[])
 
         /* process */
         if (pdu_len) {
-            npdu_handler(&src, &Rx_Buf[0], pdu_len);
+            npdu_handler(&src, &Rx_Buf[0], pdu_len, NULL);
         }
         /* at least one second has passed */
         if (current_seconds != last_seconds) {

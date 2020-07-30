@@ -48,24 +48,27 @@ extern "C" {
     void handler_timesync(
         uint8_t * service_request,
         uint16_t service_len,
-        BACNET_ADDRESS * src);
+        BACNET_ADDRESS * src,
+        void * token);
     BACNET_STACK_EXPORT
     void handler_timesync_utc(
         uint8_t * service_request,
         uint16_t service_len,
-        BACNET_ADDRESS * src);
+        BACNET_ADDRESS * src,
+        void * token);
     /* time sync master features */
     BACNET_STACK_EXPORT
     int handler_timesync_encode_recipients(
         uint8_t * apdu,
-        int max_apdu);
+        int max_apdu,
+        void * token);
     BACNET_STACK_EXPORT
     void handler_timesync_task(BACNET_DATE_TIME *bdatetime);
     BACNET_STACK_EXPORT
     void handler_timesync_init(void);
     BACNET_STACK_EXPORT
     bool handler_timesync_recipient_write(
-        BACNET_WRITE_PROPERTY_DATA * wp_data);
+        BACNET_WRITE_PROPERTY_DATA * wp_data, void * token);
     BACNET_STACK_EXPORT
     uint32_t handler_timesync_interval(void);
     BACNET_STACK_EXPORT

@@ -69,7 +69,7 @@ int DNET_list[2] = {
 static bool Error_Detected = false;
 
 static void MyAbortHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t abort_reason, bool server, void *token)
 {
     /* FIXME: verify src and invoke id */
     (void)src;
@@ -80,7 +80,7 @@ static void MyAbortHandler(
 }
 
 static void MyRejectHandler(
-    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason)
+    BACNET_ADDRESS *src, uint8_t invoke_id, uint8_t reject_reason, void *token)
 {
     /* FIXME: verify src and invoke id */
     (void)src;
@@ -92,7 +92,8 @@ static void MyRejectHandler(
 static void My_Router_Handler(BACNET_ADDRESS *src,
     BACNET_NPDU_DATA *npdu_data,
     uint8_t *npdu, /* PDU data */
-    uint16_t npdu_len)
+    uint16_t npdu_len,
+    void *token)
 {
     uint16_t npdu_offset = 0;
     uint16_t dnet = 0;
@@ -179,7 +180,8 @@ static void My_Router_Handler(BACNET_ADDRESS *src,
 
 static void My_NPDU_Handler(BACNET_ADDRESS *src, /* source address */
     uint8_t *pdu, /* PDU data */
-    uint16_t pdu_len)
+    uint16_t pdu_len,
+    void *token)
 { /* length PDU  */
     int apdu_offset = 0;
     BACNET_ADDRESS dest = { 0 };
@@ -189,7 +191,7 @@ static void My_NPDU_Handler(BACNET_ADDRESS *src, /* source address */
     if (npdu_data.network_layer_message) {
         if (apdu_offset <= pdu_len) {
             My_Router_Handler(src, &npdu_data, &pdu[apdu_offset],
-                (uint16_t)(pdu_len - apdu_offset));
+                (uint16_t)(pdu_len - apdu_offset), NULL);
         }
     } else if ((apdu_offset > 0) && (apdu_offset <= pdu_len)) {
         if ((npdu_data.protocol_version == BACNET_PROTOCOL_VERSION) &&
@@ -198,7 +200,7 @@ static void My_NPDU_Handler(BACNET_ADDRESS *src, /* source address */
             /* and we are not a router, so ignore messages with
                routing information cause they are not for us */
             apdu_handler(
-                src, &pdu[apdu_offset], (uint16_t)(pdu_len - apdu_offset));
+                src, &pdu[apdu_offset], (uint16_t)(pdu_len - apdu_offset), NULL);
         } else {
             if (dest.net) {
                 debug_printf("NPDU: DNET=%d.  Discarded!\n", dest.net);
@@ -361,7 +363,7 @@ int main(int argc, char *argv[])
         pdu_len = datalink_receive(&src, &Rx_Buf[0], MAX_MPDU, timeout);
         /* process */
         if (pdu_len) {
-            My_NPDU_Handler(&src, &Rx_Buf[0], pdu_len);
+            My_NPDU_Handler(&src, &Rx_Buf[0], pdu_len, NULL);
         }
         if (Error_Detected)
             break;

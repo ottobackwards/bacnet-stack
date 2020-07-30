@@ -269,7 +269,7 @@ int main(int argc, char *argv[])
 
         /* process */
         if (pdu_len) {
-            npdu_handler(&src, &Rx_Buf[0], pdu_len);
+            npdu_handler(&src, &Rx_Buf[0], pdu_len, NULL);
         }
         /* at least one second has passed */
         elapsed_seconds = (uint32_t)(current_seconds - last_seconds);

@@ -185,12 +185,14 @@ static void network_control_handler(BACNET_ADDRESS *src,
  * numbers. Normally just one valid entry; terminated with a -1 value.
  * @param apdu [in] The apdu portion of the request, to be processed.
  * @param apdu_len [in] The total (remaining) length of the apdu.
+ * @param token [in] The caller token, passed back in callbacks.
  */
 static void routed_apdu_handler(BACNET_ADDRESS *src,
     BACNET_ADDRESS *dest,
     int *DNET_list,
     uint8_t *apdu,
-    uint16_t apdu_len)
+    uint16_t apdu_len,
+    void *token)
 {
     int cursor = 0; /* Starting hint */
     bool bGotOne = false;
@@ -221,7 +223,7 @@ static void routed_apdu_handler(BACNET_ADDRESS *src,
     }
 
     while (Routed_Device_GetNext(dest, DNET_list, &cursor)) {
-        apdu_handler(src, apdu, apdu_len);
+        apdu_handler(src, apdu, apdu_len, token);
         bGotOne = true;
         if (cursor < 0) { /* If no more matches, */
             break; /* We don't need to keep looking */
@@ -258,11 +260,12 @@ static void routed_apdu_handler(BACNET_ADDRESS *src,
  *                   already been sent via the apdu_handler.
  * @param DNET_list [in] List of our reachable downstream BACnet Network
  * numbers. Normally just one valid entry; terminated with a -1 value.
- *  @param pdu [in]  Buffer containing the NPDU and APDU of the received packet.
- *  @param pdu_len [in] The size of the received message in the pdu[] buffer.
+ * @param pdu [in]  Buffer containing the NPDU and APDU of the received packet.
+ * @param pdu_len [in] The size of the received message in the pdu[] buffer.
+ * @param token [in] The caller token, passed back in callbacks.
  */
 void routing_npdu_handler(
-    BACNET_ADDRESS *src, int *DNET_list, uint8_t *pdu, uint16_t pdu_len)
+    BACNET_ADDRESS *src, int *DNET_list, uint8_t *pdu, uint16_t pdu_len, void *token)
 {
     int apdu_offset = 0;
     BACNET_ADDRESS dest = { 0 };
@@ -285,7 +288,7 @@ void routing_npdu_handler(
         } else if (apdu_offset <= pdu_len) {
             if ((dest.net == 0) || (npdu_data.hop_count > 1)) {
                 routed_apdu_handler(src, &dest, DNET_list, &pdu[apdu_offset],
-                    (uint16_t)(pdu_len - apdu_offset));
+                    (uint16_t)(pdu_len - apdu_offset), token);
             }
             /* Else, hop_count bottomed out and we discard this one. */
         }

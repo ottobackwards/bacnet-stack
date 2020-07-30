@@ -40,7 +40,7 @@
 bool Send_I_Am_Flag = true;
 
 void handler_who_is(
-    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src)
+    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src, void *token)
 {
     int len = 0;
     int32_t low_limit = 0;

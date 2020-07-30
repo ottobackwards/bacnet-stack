@@ -49,7 +49,8 @@ extern "C" {
         *unconfirmed_function) (
         uint8_t * service_request,
         uint16_t len,
-        BACNET_ADDRESS * src);
+        BACNET_ADDRESS * src,
+        void * token);
 
 /* generic confirmed function handler */
 /* Suitable to handle the following services: */
@@ -72,13 +73,15 @@ extern "C" {
         uint8_t * service_request,
         uint16_t service_len,
         BACNET_ADDRESS * src,
-        BACNET_CONFIRMED_SERVICE_DATA * service_data);
+        BACNET_CONFIRMED_SERVICE_DATA * service_data,
+        void * token);
 
 /* generic confirmed simple ack function handler */
     typedef void (
         *confirmed_simple_ack_function) (
         BACNET_ADDRESS * src,
-        uint8_t invoke_id);
+        uint8_t invoke_id,
+        void * token);
 
 /* generic confirmed ack function handler */
     typedef void (
@@ -86,7 +89,8 @@ extern "C" {
         uint8_t * service_request,
         uint16_t service_len,
         BACNET_ADDRESS * src,
-        BACNET_CONFIRMED_SERVICE_ACK_DATA * service_data);
+        BACNET_CONFIRMED_SERVICE_ACK_DATA * service_data,
+        void * token);
 
 /* generic error reply function */
     typedef void (
@@ -94,7 +98,8 @@ extern "C" {
         BACNET_ADDRESS * src,
         uint8_t invoke_id,
         BACNET_ERROR_CLASS error_class,
-        BACNET_ERROR_CODE error_code);
+        BACNET_ERROR_CODE error_code,
+        void * token);
 
 /* generic abort reply function */
     typedef void (
@@ -102,14 +107,16 @@ extern "C" {
         BACNET_ADDRESS * src,
         uint8_t invoke_id,
         uint8_t abort_reason,
-        bool server);
+        bool server,
+        void * token);
 
 /* generic reject reply function */
     typedef void (
         *reject_function) (
         BACNET_ADDRESS * src,
         uint8_t invoke_id,
-        uint8_t reject_reason);
+        uint8_t reject_reason,
+        void * token);
 
     BACNET_STACK_EXPORT
     void apdu_set_confirmed_ack_handler(
@@ -190,7 +197,9 @@ extern "C" {
     void apdu_handler(
         BACNET_ADDRESS * src,   /* source address */
         uint8_t * apdu, /* APDU data */
-        uint16_t pdu_len);      /* for confirmed messages */
+        uint16_t pdu_len,
+        void * token /* pased back to callback */
+        );      /* for confirmed messages */
 
 #ifdef __cplusplus
 }

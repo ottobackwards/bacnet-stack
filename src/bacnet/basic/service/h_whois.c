@@ -43,9 +43,10 @@
  * @param service_request [in] The received message to be handled.
  * @param service_len [in] Length of the service_request message.
  * @param src [in] The BACNET_ADDRESS of the message's source (ignored).
+ * @param token [in] The caller token, passed back in callbacks.
  */
 void handler_who_is(
-    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src)
+    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src, void *token)
 {
     int len = 0;
     int32_t low_limit = 0;
@@ -74,9 +75,11 @@ void handler_who_is(
  * @param service_len [in] Length of the service_request message.
  * @param src [in] The BACNET_ADDRESS of the message's source that the
  *                 response will be sent back to.
+ * @param token [in] The caller token, passed back in callbacks.
+ *
  */
 void handler_who_is_unicast(
-    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src)
+    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src, void *token)
 {
     int len = 0;
     int32_t low_limit = 0;
@@ -162,9 +165,10 @@ static void check_who_is_for_routing(uint8_t *service_request,
  * @param service_request [in] The received message to be handled.
  * @param service_len [in] Length of the service_request message.
  * @param src [in] The BACNET_ADDRESS of the message's source (ignored).
+ * @param token [in] The caller token, passed back in callbacks (ignored).
  */
 void handler_who_is_bcast_for_routing(
-    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src)
+    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src, void *token)
 {
     check_who_is_for_routing(service_request, service_len, src, false);
 }
@@ -179,9 +183,10 @@ void handler_who_is_bcast_for_routing(
  * @param service_len [in] Length of the service_request message.
  * @param src [in] The BACNET_ADDRESS of the message's source that the
  *                 response will be sent back to.
+ * @param token [in] The caller token, passed back in callbacks (ignored).
  */
 void handler_who_is_unicast_for_routing(
-    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src)
+    uint8_t *service_request, uint16_t service_len, BACNET_ADDRESS *src, void *token)
 {
     check_who_is_for_routing(service_request, service_len, src, true);
 }

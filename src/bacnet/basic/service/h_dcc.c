@@ -94,11 +94,13 @@ char *handler_dcc_password(void)
  * @param src [in] BACNET_ADDRESS of the source of the message
  * @param service_data [in] The BACNET_CONFIRMED_SERVICE_DATA information
  *                          decoded from the APDU header of this message.
+ * @param token [in] The caller token, passed back in callbacks (ignored).
  */
 void handler_device_communication_control(uint8_t *service_request,
     uint16_t service_len,
     BACNET_ADDRESS *src,
-    BACNET_CONFIRMED_SERVICE_DATA *service_data)
+    BACNET_CONFIRMED_SERVICE_DATA *service_data,
+    void *token)
 {
     uint16_t timeDuration = 0;
     BACNET_COMMUNICATION_ENABLE_DISABLE state = COMMUNICATION_ENABLE;
