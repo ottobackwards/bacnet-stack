@@ -39,7 +39,6 @@
 #include "bacnet/bacdevobjpropref.h"
 #endif
 
-
 struct BACnet_Application_Data_Value;
 typedef struct BACnet_Application_Data_Value {
     bool context_specific;      /* true if context specific data */
@@ -247,13 +246,21 @@ extern "C" {
         const char *argv,
         BACNET_APPLICATION_DATA_VALUE * value);
     BACNET_STACK_EXPORT
+    bool bacapp_print_value_custom(
+        custom_print_function,
+        void * default_parameter,
+        BACNET_OBJECT_PROPERTY_VALUE * value);
+    BACNET_STACK_EXPORT
     bool bacapp_print_value(
         FILE * stream,
         BACNET_OBJECT_PROPERTY_VALUE * value);
+    BACNET_STACK_EXPORT
+    void bacapp_printf(void* file, char* str);
 #else
 /* Provide harmless return values */
 #define bacapp_parse_application_data(x,y,z)   false
 #define bacapp_print_value(x,y) 			   false
+#define bacapp_printf(x,y)  false
 #endif
 
 #ifdef BAC_TEST

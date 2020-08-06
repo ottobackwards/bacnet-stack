@@ -51,6 +51,12 @@ extern "C" {
     BACNET_STACK_EXPORT
     void rp_ack_print_data(
         BACNET_READ_PROPERTY_DATA * data);
+    BACNET_STACK_EXPORT
+    void rp_ack_print_data_custom(
+        custom_print_function function, void* default_parameter,
+        BACNET_READ_PROPERTY_DATA * data);
+    BACNET_STACK_EXPORT
+    void rp_ack_printf(void* file, char* str);
 
 #ifdef __cplusplus
 }

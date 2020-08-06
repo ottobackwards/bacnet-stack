@@ -1405,9 +1405,18 @@ int bacapp_snprintf_value(
  * specified stream. If stream is NULL, do not print anything. If extraction
  * failed, do not print anything. Return the status of the extraction.
  */
+
+void bacapp_printf(void* file, char* str) {
+    fprintf((FILE*)file, "%s", str);
+}
+
 bool bacapp_print_value(
-    FILE *stream, BACNET_OBJECT_PROPERTY_VALUE *object_value)
-{
+    FILE *stream, BACNET_OBJECT_PROPERTY_VALUE *object_value) {
+    return bacapp_print_value_custom(&bacapp_printf, stream, object_value);
+}
+
+bool bacapp_print_value_custom(custom_print_function function,
+                               void* default_parameter, BACNET_OBJECT_PROPERTY_VALUE *object_value) {
     char *str;
     bool retval = false;
     size_t str_len = 32;
@@ -1430,8 +1439,8 @@ bool bacapp_print_value(
             free(str);
             break;
         } else {
-            if (stream)
-                fprintf(stream, "%s", str);
+            if (function)
+                function(default_parameter, str);
             free(str);
             retval = true;
             break;

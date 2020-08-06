@@ -170,6 +170,8 @@ typedef struct BACnet_Object_Id {
     uint32_t instance;
 } BACNET_OBJECT_ID;
 
+typedef void (*custom_print_function)(void* default_parmeter, char* str);
+
 #define MAX_NPDU (1+1+2+1+MAX_MAC_LEN+2+1+MAX_MAC_LEN+1+1+2)
 #define MAX_PDU (MAX_APDU + MAX_NPDU)
 

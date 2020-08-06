@@ -41,10 +41,23 @@
 
 /** @file h_rp_a.c  Handles Read Property Acknowledgments. */
 
+
+void rp_ack_print(void* file, char* str) {
+    fprintf((FILE*)file, "%s", str);
+}
+
+
 /** For debugging...
  * @param [in] data portion of the ACK
  */
-void rp_ack_print_data(BACNET_READ_PROPERTY_DATA *data)
+void rp_ack_print_data(BACNET_READ_PROPERTY_DATA *data){
+    rp_ack_print_data_custom(&rp_ack_printf, stdout, data);
+}
+
+void rp_ack_print_data_custom(
+    custom_print_function function, void* default_parameter,
+    BACNET_READ_PROPERTY_DATA * data)
+
 {
 #ifdef BACAPP_PRINT_ENABLED
     BACNET_OBJECT_PROPERTY_VALUE object_value; /* for bacapp printing */
@@ -69,7 +82,7 @@ void rp_ack_print_data(BACNET_READ_PROPERTY_DATA *data)
             if (first_value && (len < application_data_len)) {
                 first_value = false;
 #if PRINT_ENABLED
-                fprintf(stdout, "{");
+                function(default_parameter, "{");
                 print_brace = true;
 #endif
             }
@@ -79,7 +92,7 @@ void rp_ack_print_data(BACNET_READ_PROPERTY_DATA *data)
             object_value.object_property = data->object_property;
             object_value.array_index = data->array_index;
             object_value.value = &value;
-            bacapp_print_value(stdout, &object_value);
+            bacapp_print_value_custom(function, default_parameter, &object_value);
 #endif
             if (len > 0) {
                 if (len < application_data_len) {
@@ -87,7 +100,7 @@ void rp_ack_print_data(BACNET_READ_PROPERTY_DATA *data)
                     application_data_len -= len;
                     /* there's more! */
 #if PRINT_ENABLED
-                    fprintf(stdout, ",");
+                    function(default_parameter, ",");
 #endif
                 } else {
                     break;
@@ -98,7 +111,7 @@ void rp_ack_print_data(BACNET_READ_PROPERTY_DATA *data)
         }
 #if PRINT_ENABLED
         if (print_brace)
-            fprintf(stdout, "}");
+            function(default_parameter, "}");
         fprintf(stdout, "\r\n");
 #endif
     }
